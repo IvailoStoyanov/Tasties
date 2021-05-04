@@ -1,8 +1,71 @@
 import styles from "./DishPage.module.scss";
 
 export const getStaticPaths = async () => {
-  const response = await fetch("http://localhost:3000/api/dishesMock");
-  const data = await response.json();
+  // const response = await fetch("http://localhost:3000/api/dishesMock");
+  // const data = await response.json();
+
+  const data = {
+    "availableIngredients": [
+      "banana",
+      "garlic",
+      "creme",
+      "onion",
+      "eggs",
+      "sausage",
+      "cucumber",
+      "milk",
+      "pumpkin"
+    ],
+    "missingIngredients": ["avocado", "cheese", "bread", "sugar", "carrots"],
+    "allDishes": [
+      {
+        "id": "soup",
+        "image": "/images/soup.jpg",
+        "alt": "rout",
+        "name": "Pumpkin Soup",
+        "price": "$",
+        "time": "10 min",
+        "ingredients": {
+          "pumpkin": true,
+          "garlic": true,
+          "creme": true,
+          "onion": true,
+          "broth": true,
+          "carrots": true
+        }
+      },
+      {
+        "id": "iceCream",
+        "image": "/images/iceCream.jpg",
+        "alt": "rout",
+        "name": "Ice Cream",
+        "price": "$",
+        "time": "10 min",
+        "ingredients": {
+          "milk": true,
+          "sugar": true,
+          "eggs": true,
+          "carrots": false
+        }
+      },
+      {
+        "id": "carrotCake",
+        "image": "/images/carrotCake.jpg",
+        "alt": "rout",
+        "alt": "rout",
+        "name": "Carrot Cake",
+        "price": "$",
+        "time": "10 min",
+        "ingredients": {
+          "milk": true,
+          "sugar": true,
+          "eggs": false,
+          "carrots": false
+        }
+      }
+    ]
+  }
+  
 
   const paths = data.allDishes.map((dish) => {
     return {
@@ -18,8 +81,71 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const id = context.params.slug;
-  const response = await fetch(`http://localhost:3000/api/dishesMock`);
-  const allData = await response.json();
+  // const response = await fetch(`http://localhost:3000/api/dishesMock`);
+  // const allData = await response.json();
+
+const allData = {
+  "availableIngredients": [
+    "banana",
+    "garlic",
+    "creme",
+    "onion",
+    "eggs",
+    "sausage",
+    "cucumber",
+    "milk",
+    "pumpkin"
+  ],
+  "missingIngredients": ["avocado", "cheese", "bread", "sugar", "carrots"],
+  "allDishes": [
+    {
+      "id": "soup",
+      "image": "/images/soup.jpg",
+      "alt": "rout",
+      "name": "Pumpkin Soup",
+      "price": "$",
+      "time": "10 min",
+      "ingredients": {
+        "pumpkin": true,
+        "garlic": true,
+        "creme": true,
+        "onion": true,
+        "broth": true,
+        "carrots": true
+      }
+    },
+    {
+      "id": "iceCream",
+      "image": "/images/iceCream.jpg",
+      "alt": "rout",
+      "name": "Ice Cream",
+      "price": "$",
+      "time": "10 min",
+      "ingredients": {
+        "milk": true,
+        "sugar": true,
+        "eggs": true,
+        "carrots": false
+      }
+    },
+    {
+      "id": "carrotCake",
+      "image": "/images/carrotCake.jpg",
+      "alt": "rout",
+      "alt": "rout",
+      "name": "Carrot Cake",
+      "price": "$",
+      "time": "10 min",
+      "ingredients": {
+        "milk": true,
+        "sugar": true,
+        "eggs": false,
+        "carrots": false
+      }
+    }
+  ]
+}
+
 
   // CHECK fi this function .find can be more efficient?
   const data = allData.allDishes.find(function (dish) {
