@@ -1,0 +1,44 @@
+.wrapper {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .dish {
+    display: flex;
+    margin: 0 20px 35px 20px;
+    border-radius: 5px;
+    box-shadow: 41px 30px 67px -13px rgba(153, 153, 153, 0.61);
+
+    img {
+      max-width: 27%;
+      object-fit: cover;
+      border-radius: 5px 0 0 5px;
+    }
+
+    .textWrapper {
+      padding: 5px 0 25px 20px;
+      width: 70%;
+
+      h3 {
+        margin: 18px 0;
+        font-size: 28px;
+      }
+    }
+
+    li {
+      padding-bottom: 5px;
+    }
+
+    .available {
+      color: #38b000;
+    }
+    .partiallyAvailable {
+      color: #ffa200;
+    }
+    .notAvailable {
+      color: #ff0a3b;
+    }
+  }
+}
