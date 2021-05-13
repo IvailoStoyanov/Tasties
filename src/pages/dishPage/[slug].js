@@ -1,75 +1,14 @@
 import styles from "./DishPage.module.scss";
 
 export const getStaticPaths = async () => {
-  // const response = await fetch("http://localhost:3000/api/dishesMock");
-  // const data = await response.json();
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/dishesMock`
+  );
+  const data = await response.json();
 
-  const data = {
-    "availableIngredients": [
-      "banana",
-      "garlic",
-      "creme",
-      "onion",
-      "eggs",
-      "sausage",
-      "cucumber",
-      "milk",
-      "pumpkin"
-    ],
-    "missingIngredients": ["avocado", "cheese", "bread", "sugar", "carrots"],
-    "allDishes": [
-      {
-        "id": "soup",
-        "image": "/images/soup.jpg",
-        "alt": "rout",
-        "name": "Pumpkin Soup",
-        "price": "$",
-        "time": "10 min",
-        "ingredients": {
-          "pumpkin": true,
-          "garlic": true,
-          "creme": true,
-          "onion": true,
-          "broth": true,
-          "carrots": true
-        }
-      },
-      {
-        "id": "iceCream",
-        "image": "/images/iceCream.jpg",
-        "alt": "rout",
-        "name": "Ice Cream",
-        "price": "$",
-        "time": "10 min",
-        "ingredients": {
-          "milk": true,
-          "sugar": true,
-          "eggs": true,
-          "carrots": false
-        }
-      },
-      {
-        "id": "carrotCake",
-        "image": "/images/carrotCake.jpg",
-        "alt": "rout",
-        "alt": "rout",
-        "name": "Carrot Cake",
-        "price": "$",
-        "time": "10 min",
-        "ingredients": {
-          "milk": true,
-          "sugar": true,
-          "eggs": false,
-          "carrots": false
-        }
-      }
-    ]
-  }
-  
-
-  const paths = data.allDishes.map((dish) => {
+  const paths = data.dishes.map((dish) => {
     return {
-      params: { slug: dish.id.toString() },
+      params: { slug: dish.pageName.toString() },
     };
   });
 
@@ -81,75 +20,14 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const id = context.params.slug;
-  // const response = await fetch(`http://localhost:3000/api/dishesMock`);
-  // const allData = await response.json();
-
-const allData = {
-  "availableIngredients": [
-    "banana",
-    "garlic",
-    "creme",
-    "onion",
-    "eggs",
-    "sausage",
-    "cucumber",
-    "milk",
-    "pumpkin"
-  ],
-  "missingIngredients": ["avocado", "cheese", "bread", "sugar", "carrots"],
-  "allDishes": [
-    {
-      "id": "soup",
-      "image": "/images/soup.jpg",
-      "alt": "rout",
-      "name": "Pumpkin Soup",
-      "price": "$",
-      "time": "10 min",
-      "ingredients": {
-        "pumpkin": true,
-        "garlic": true,
-        "creme": true,
-        "onion": true,
-        "broth": true,
-        "carrots": true
-      }
-    },
-    {
-      "id": "iceCream",
-      "image": "/images/iceCream.jpg",
-      "alt": "rout",
-      "name": "Ice Cream",
-      "price": "$",
-      "time": "10 min",
-      "ingredients": {
-        "milk": true,
-        "sugar": true,
-        "eggs": true,
-        "carrots": false
-      }
-    },
-    {
-      "id": "carrotCake",
-      "image": "/images/carrotCake.jpg",
-      "alt": "rout",
-      "alt": "rout",
-      "name": "Carrot Cake",
-      "price": "$",
-      "time": "10 min",
-      "ingredients": {
-        "milk": true,
-        "sugar": true,
-        "eggs": false,
-        "carrots": false
-      }
-    }
-  ]
-}
-
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/dishesMock`
+  );
+  const { dishes } = await response.json();
 
   // CHECK fi this function .find can be more efficient?
-  const data = allData.allDishes.find(function (dish) {
-    if (dish.id == id) {
+  const data = dishes.find(function (dish) {
+    if (dish.pageName == id) {
       return dish;
     }
   });
@@ -157,30 +35,17 @@ const allData = {
   return {
     props: { dish: data },
   };
-};
+}
 
-const calculateOwnedIngredients = (ingredients) => {
-  const owned = [];
-  for (const [key, value] of Object.entries(ingredients)) {
-    if (value) {
-      owned.push(key);
-    }
-  }
-  return owned;
-};
+const getDishAvailability = ({ neededIngredients, availableIngredients }) => {
+  const needed = neededIngredients.length;
+  const owned = availableIngredients.length;
 
-const getDishAvailability = ({ ingredients }) => {
-  const numberOfNeeded = Object.entries(ingredients).length;
-  const owned = calculateOwnedIngredients(ingredients);
-
-  if (numberOfNeeded === owned.length) {
+  if (needed === owned) {
     return <li className={styles.available}>Available</li>;
-  } else if (
-    owned.length < numberOfNeeded &&
-    numberOfNeeded * 0.6 < owned.length
-  ) {
+  } else if (owned < needed && needed * 0.6 <= owned) {
     return <li className={styles.partiallyAvailable}>Partially available</li>;
-  } else if (numberOfNeeded * 0.6 > owned.length) {
+  } else if (needed * 0.6 > owned) {
     return <li className={styles.notAvailable}>Not available</li>;
   }
 };
@@ -191,34 +56,39 @@ const DishDetails = ({ dish }) => {
       <header className={styles.header}>
         <h1>{dish.name}</h1>
         <div className={styles.dishIntro}>
-          <img src={dish.image} alt={dish.alt} />
+          <img src={dish.image[0].thumbnails.large.url} alt={`image of ${dish.name}`} />
           <ul>
             {getDishAvailability(dish)}
             <li>Time: {dish.time}</li>
-            <li>Price: {dish.price}</li>
+            <li>Price: {dish.cost}</li>
           </ul>
         </div>
       </header>
       <div className={styles.ingredients}>
         <h2>Ingredients</h2>
         <ul>
-          {Object.entries(dish.ingredients).map((ingr, i) => {
+          {dish.neededIngredients.map((ingr, i) => {
             return (
-              <li key={i} className={ingr[1] ? styles.true : ""}>
+              <li
+                key={i}
+                className={
+                  dish.availableIngredients.includes(ingr)
+                    ? styles.true
+                    : styles.false
+                }
+              >
                 <img
                   src={
-                    ingr[1]
+                    dish.availableIngredients.includes(ingr)
                       ? "/icons/checkBoxChecked.svg"
                       : "/icons/checkBoxOutline.svg"
                   }
                 />
-                <span>
-                  {ingr[0].charAt(0).toUpperCase() + ingr[0].slice(1)}
-                </span>
+                <span>{ingr.charAt(0).toUpperCase() + ingr.slice(1)}</span>
                 <img
                   className={styles.iconRight}
                   src={
-                    ingr[1]
+                    dish.availableIngredients.includes(ingr)
                       ? "/icons/checkBoxOutline.svg"
                       : "/icons/checkBoxCrossed.svg"
                   }
