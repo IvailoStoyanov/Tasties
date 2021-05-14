@@ -5,8 +5,9 @@ import { useRef, useState } from "react";
 import styles from "./DishForm.module.scss";
 
 const DishForm = ({ onSubmit }) => {
-  const dishImage = useRef(null);
-  const [imgDirectory, setImageDirectory] = useState("");
+  const [imgSecureUrl, setImgSecureUrl] = useState("");
+  const [imgToUpload, setImgToUpload] = useState({});
+  const [imgName, setImgName] = useState("");
   const [cost, setCost] = useState("$");
   const [ingredients, setIngredients] = useState([]);
   const [ingrName, setIngrName] = useState("");
@@ -48,7 +49,30 @@ const DishForm = ({ onSubmit }) => {
     return cammelCaseName;
   };
 
+  async function uploadImage(event) {
+    event.preventDefault()
+    const formData = new FormData();
+    formData.append("file", imgToUpload[0]);
+    formData.append("upload_preset", "yminrbyz");
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/dsaz6niwp/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+    setImgSecureUrl(data.secure_url);
+  }
+
   const handleOnSubmit = (e) => {
+    // uploadImage().then((res) => {
+    //   // console.log(res);
+      
+    // })
+    
     const { currentTarget } = e;
     const fields = Array.from(currentTarget.elements);
     const ingredients = [];
@@ -64,16 +88,19 @@ const DishForm = ({ onSubmit }) => {
       if (field.name === "ingredient") {
         ingredients.push(field.value);
         data["neededIngredients"] = ingredients;
+      }
+      if (field.name === "image") {
+        console.log(imgSecureUrl);
+        
+        data["image"] = imgSecureUrl.toString();
       } else {
         data[field.name] = field.value;
       }
     });
 
-    //the available ingredients could be calculated from the other API with all available ingredients
     data["availableIngredients"] = [];
     data["pageName"] = pageName;
     data["url"] = `/dishPage/${pageName}`;
-
 
     if (typeof onSubmit === "function") {
       onSubmit(data, e);
@@ -117,22 +144,24 @@ const DishForm = ({ onSubmit }) => {
         <div className={styles.inputWrapper}>
           <div className={styles.inputWrapper_fileUploadInput}>
             <label htmlFor="image">Upload dish image</label>
-            <span> {imgDirectory}</span>
+            <span> {imgName}</span>
             <input
               required
               type="file"
               id="image"
               name="image"
-              ref={dishImage}
               accept="image/png, image/jpeg, image/jpg"
-              onChange={() => {
-                setImageDirectory(
-                  dishImage.current.files.length
-                    ? dishImage.current.files[0].name
+              onChange={(event) => {
+                setImgToUpload(event.currentTarget.files);
+                //after upload is finished setImageDirectory
+                setImgName(
+                  event.currentTarget.files.length
+                    ? event.currentTarget.files[0].name
                     : ""
                 );
               }}
-            ></input>
+              ></input>
+              <button onClick={uploadImage}>upload</button>
           </div>
         </div>
         <div className={styles.inputWrapper}>

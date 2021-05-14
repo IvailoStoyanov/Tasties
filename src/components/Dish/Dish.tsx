@@ -5,6 +5,9 @@ import styles from "./Dish.module.scss";
 import Link from "next/link";
 
 const Dish = ({ url, image, dishName, time, cost, needed, available}) => {
+  (needed ? needed = needed.length : needed = 0);
+  (available ? available = available.length : available = 0);
+
     return (
       <>
         <Link href={url}>

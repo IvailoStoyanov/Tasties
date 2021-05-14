@@ -3,6 +3,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 
 import { useAuth } from "../hooks/useAuth";
+import { getAllDishes, createDish } from "../lib/dishes";
 
 import Link from "next/link";
 import Dish from "../components/Dish";
@@ -11,27 +12,15 @@ import DishForm from "../components/DishForm";
 export default function Home({ dishes: defaultDishes }) {
   const [dishes, updateDishes] = useState(defaultDishes);
 
-  useEffect(() => {
-    async function run() {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/dishesMock`
-      );
-      const { dishes } = await response.json();
-      updateDishes(dishes);
-    }
-    run();
-  }, []);
-
   const { user, logIn, logOut } = useAuth();
 
-  async function handleOnSubmit(data:any, e) {
+  async function handleOnSubmit(data: any, e) {
     e.preventDefault();
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/dishesMock`, {
-        method: 'POST',
-        body: JSON.stringify(data)
-      });
+    await createDish(data);
+
+    const dishes = await getAllDishes();
+    updateDishes(dishes);
   }
 
   // console.log("user:", user);
@@ -54,7 +43,6 @@ export default function Home({ dishes: defaultDishes }) {
           <button onClick={logOut}>Log out</button>
         </p>
       )}
-      {user && <p>Render stuff once a user is logged in!</p>}
 
       <main className={styles.main}>
         <ul>
@@ -63,12 +51,12 @@ export default function Home({ dishes: defaultDishes }) {
               <Dish
                 key={dish.id}
                 url={dish.url}
-                image={dish.image[0].thumbnails.large.url}
+                image={dish.image[0].url}
                 dishName={dish.name}
                 time={dish.time}
                 cost={dish.cost}
-                needed={dish.neededIngredients.length}
-                available={dish.availableIngredients.length}
+                needed={dish.neededIngredients}
+                available={dish.availableIngredients}
               />
             );
           })}
@@ -76,17 +64,19 @@ export default function Home({ dishes: defaultDishes }) {
 
         <Link href={"/missingIngredients"}>Missing Ingredients</Link>
 
-        <DishForm onSubmit={handleOnSubmit}></DishForm>
+        {user && (
+          <>
+            <p>Render stuff once a user is logged in!</p>
+            <DishForm onSubmit={handleOnSubmit}></DishForm>
+          </>
+        )}
       </main>
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/dishesMock`
-  );
-  const { dishes } = await response.json();
+  const dishes = await getAllDishes();
 
   return {
     props: {

@@ -24,9 +24,33 @@ export default async (req, res) => {
   }
 
   if (req.method === "POST") {
-    const { name, cost, time, image, neededIngredients, pageName, url } = JSON.parse(req.body);
+    const { authorization } = req.headers;
 
-    console.log(image);
+    const auth = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOING}/user`, {
+      headers: {
+        Authorization: authorization,
+      },
+    });
+
+    const authJson = await auth.json();
+
+    if ( !authJson.id ) {
+      res.status(401).json({ error: 'Invalid token' });
+      return;
+    }
+
+
+    const {
+      name,
+      cost,
+      time,
+      image,
+      neededIngredients,
+      pageName,
+      url,
+    } = JSON.parse(req.body);
+
+    console.log("this?", image);
     const data = {
       records: [
         {
@@ -39,13 +63,13 @@ export default async (req, res) => {
             neededIngredients,
             image: [
               {
-                "url": "https://dl.airtable.com/.attachments/c72ce2caa36f4692a9b668c18f01ad0e/1b081878/carrotCake.jpg"
-              }
-            ]
+                url: image,
+              },
+            ],
           },
         },
       ],
-      "typecast": true
+      typecast: true,
     };
 
     const response = await fetch(
