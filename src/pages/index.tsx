@@ -17,6 +17,8 @@ export default function Home({ dishes: defaultDishes }) {
   async function handleOnSubmit(data: any, e) {
     e.preventDefault();
 
+    console.log('the airtable base ID', process.env.AIRTABLE_BASE_ID);
+    
     await createDish(data);
 
     const dishes = await getAllDishes();
