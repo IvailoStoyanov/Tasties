@@ -1,6 +1,7 @@
 import { auth } from "./auth";
 
 export async function getAllDishes() {
+    console.log('GetAllDishes: the airtable base ID', process.env.AIRTABLE_BASE_ID);
   const response = await fetch(
     `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
     {
@@ -16,6 +17,7 @@ export async function getAllDishes() {
 }
 
 export async function createDish(data) {
+    console.log('createDish: airtable base ID', process.env.AIRTABLE_BASE_ID);
   const user = auth.currentUser();
   console.log(user.token);
 
