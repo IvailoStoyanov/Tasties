@@ -50,7 +50,6 @@ export default async (req, res) => {
       url,
     } = JSON.parse(req.body);
 
-    console.log("this?", image);
     const data = {
       records: [
         {

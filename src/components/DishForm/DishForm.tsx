@@ -90,8 +90,6 @@ const DishForm = ({ onSubmit }) => {
         data["neededIngredients"] = ingredients;
       }
       if (field.name === "image") {
-        console.log(imgSecureUrl);
-        
         data["image"] = imgSecureUrl.toString();
       } else {
         data[field.name] = field.value;

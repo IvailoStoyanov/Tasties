@@ -75,9 +75,6 @@ export default function Home({ dishes: defaultDishes }) {
 export async function getStaticProps() {
   const dishes = await getAllDishes();
 
-  console.log('the DISHES',dishes);
-  
-
   return {
     props: {
       dishes,
