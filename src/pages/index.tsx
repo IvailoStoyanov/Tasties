@@ -23,9 +23,6 @@ export default function Home({ dishes: defaultDishes }) {
     updateDishes(dishes);
   }
 
-  // console.log("user:", user);
-  // console.log("dishes:", dishes);
-
   return (
     <div className={styles.container}>
       <Head>
@@ -46,17 +43,17 @@ export default function Home({ dishes: defaultDishes }) {
 
       <main className={styles.main}>
         <ul>
-          {dishes.map((dish) => {
+          {dishes.map(({fields}) => {
             return (
               <Dish
-                key={dish.id}
-                url={dish.url}
-                image={dish.image[0].url}
-                dishName={dish.name}
-                time={dish.time}
-                cost={dish.cost}
-                needed={dish.neededIngredients}
-                available={dish.availableIngredients}
+                key={fields.pageName}
+                url={fields.url}
+                image={fields.image[0].url}
+                dishName={fields.name}
+                time={fields.time}
+                cost={fields.cost}
+                needed={fields.neededIngredients}
+                available={fields.availableIngredients}
               />
             );
           })}
@@ -77,6 +74,9 @@ export default function Home({ dishes: defaultDishes }) {
 
 export async function getStaticProps() {
   const dishes = await getAllDishes();
+
+  console.log('the DISHES',dishes);
+  
 
   return {
     props: {

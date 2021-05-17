@@ -2,13 +2,18 @@ import styles from "./DishPage.module.scss";
 
 export const getStaticPaths = async () => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/dishesMock`
-  );
+    `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+      },
+    }
+  )
   const data = await response.json();
 
-  const paths = data.dishes.map((dish) => {
+  const paths = data.records.map((dish) => {
     return {
-      params: { slug: dish.pageName.toString() },
+      params: { slug: dish.fields.pageName },
     };
   });
 
@@ -21,19 +26,24 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const id = context.params.slug;
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/dishesMock`
-  );
-  const { dishes } = await response.json();
-
+    `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+      },
+    }
+  )
+  const allDishes = await response.json();
+  
   // CHECK fi this function .find can be more efficient?
-  const data = dishes.find(function (dish) {
-    if (dish.pageName == id) {
+  const data = allDishes.records.find(function (dish) {
+    if (dish.fields.pageName == id) {
       return dish;
     }
   });
 
   return {
-    props: { dish: data },
+    props: { extendedDishData: data },
   };
 }
 
@@ -50,7 +60,9 @@ const getDishAvailability = ({ neededIngredients, availableIngredients }) => {
   }
 };
 
-const DishDetails = ({ dish }) => {
+const DishDetails = ({ extendedDishData }) => {
+  const dish = extendedDishData.fields;
+  
   return (
     <>
       <header className={styles.header}>
