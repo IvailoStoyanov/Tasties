@@ -1,23 +1,20 @@
 import { auth } from "./auth";
 
 export async function getAllDishes() {
-    console.log('GetAllDishes: the airtable base ID', process.env.AIRTABLE_BASE_ID);
   const response = await fetch(
-    `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
+    `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Dishes?`,
     {
       headers: {
-        Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+        Authorization: `Bearer keyZEIj7y1Z2S3ra6`,
       },
     }
   );
-
+  // Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
   const { records } = await response.json();
-
   return records;
 }
 
 export async function createDish(data) {
-    console.log('createDish: airtable base ID', process.env.AIRTABLE_BASE_ID);
   const user = auth.currentUser();
   console.log(user.token);
 

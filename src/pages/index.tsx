@@ -16,7 +16,7 @@ export default function Home({ dishes: defaultDishes }) {
 
   async function handleOnSubmit(data: any, e) {
     e.preventDefault();
-    
+
     await createDish(data);
 
     const dishes = await getAllDishes();
@@ -61,10 +61,10 @@ export default function Home({ dishes: defaultDishes }) {
 
         <Link href={"/missingIngredients"}>Missing Ingredients</Link>
 
+        <DishForm onSubmit={handleOnSubmit}></DishForm>
         {user && (
           <>
             <p>Render stuff once a user is logged in!</p>
-            <DishForm onSubmit={handleOnSubmit}></DishForm>
           </>
         )}
       </main>
@@ -72,7 +72,9 @@ export default function Home({ dishes: defaultDishes }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
+  console.log('this is where the issue came from! it executes it before the environment variables!');
+  
   const dishes = await getAllDishes();
 
   return {

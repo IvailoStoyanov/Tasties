@@ -68,11 +68,6 @@ const DishForm = ({ onSubmit }) => {
   }
 
   const handleOnSubmit = (e) => {
-    // uploadImage().then((res) => {
-    //   // console.log(res);
-      
-    // })
-    
     const { currentTarget } = e;
     const fields = Array.from(currentTarget.elements);
     const ingredients = [];
