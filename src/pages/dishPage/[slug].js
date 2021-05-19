@@ -1,29 +1,6 @@
 import styles from "./DishPage.module.scss";
 
-export const getStaticPaths = async () => {
-  const response = await fetch(
-    `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
-      },
-    }
-  )
-  const data = await response.json();
-
-  const paths = data.records.map((dish) => {
-    return {
-      params: { slug: dish.fields.pageName },
-    };
-  });
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
-export const getStaticProps = async (context) => {
+export const getServerSideProps = async (context) => {
   const id = context.params.slug;
   const response = await fetch(
     `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
