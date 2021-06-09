@@ -1,14 +1,26 @@
-// import { FaHeart, FaShareAlt } from 'react-icons/fa';
-
+import { useEffect, useState } from 'react'
 
 import styles from "./Dish.module.scss";
 import Link from "next/link";
 
-const Dish = ({ url, image, dishName, time, cost, needed, available}) => {
-  (needed ? needed = needed.length : needed = 0);
-  (available ? available = available.length : available = 0);
+const Dish = ({ url, image, dishName, time, cost, needed, allAvailable}) => {
+  const [available, setAvailable] = useState([]);
 
-    return (
+  const filterAvailable = () => {
+    needed.filter(ing => {
+      allAvailable.includes(ing);
+    });
+
+    return needed.filter(ing => {
+      return allAvailable.includes(ing);
+    });
+  }
+  
+  useEffect(() => {
+    setAvailable(filterAvailable);
+  }, []);
+  
+  return (
       <>
         <Link href={url}>
           <li className={styles.dish}>
@@ -18,9 +30,9 @@ const Dish = ({ url, image, dishName, time, cost, needed, available}) => {
               <ul>
                 <li>Time: {time} min</li>
                 <li>{cost}</li>
-                {needed === available ? <li className={styles.available}>Available</li> : ''} 
-                {available < needed && needed * 0.6 <= available ? <li className={styles.partiallyAvailable}>Partially available</li> : ''}
-                {needed * 0.6 > available ? <li className={styles.notAvailable}> Not available</li> : ''}
+                {needed.length === available.length ? <li className={styles.available}>Available</li> : ''} 
+                {available.length < needed.length && needed.length * 0.6 <= available.length ? <li className={styles.partiallyAvailable}>Partially available</li> : ''}
+                {needed.length * 0.6 > available.length ? <li className={styles.notAvailable}> Not available</li> : ''}
               </ul>
             </div>
           </li>

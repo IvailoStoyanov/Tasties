@@ -24,20 +24,20 @@ export default async (req, res) => {
   }
 
   if (req.method === "POST") {
-    const { authorization } = req.headers;
+    // const { authorization } = req.headers;
 
-    const auth = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOING}/user`, {
-      headers: {
-        Authorization: authorization,
-      },
-    });
+    // const auth = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOING}/user`, {
+    //   headers: {
+    //     Authorization: authorization,
+    //   },
+    // });
 
-    const authJson = await auth.json();
+    // const authJson = await auth.json();
 
-    if ( !authJson.id ) {
-      res.status(401).json({ error: 'Invalid token' });
-      return;
-    }
+    // if ( !authJson.id ) {
+    //   res.status(401).json({ error: 'Invalid token' });
+    //   return;
+    // }
 
 
     const {
