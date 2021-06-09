@@ -81,7 +81,9 @@ const DishForm = ({ onSubmit }) => {
         pageName = convertPageName(field.value);
       }
       if (field.name === "ingredient") {
-        ingredients.push(field.value);
+        console.log('field NAME:', field);
+        
+        ingredients.push(field.value.toLowerCase());
         data["neededIngredients"] = ingredients;
       }
       if (field.name === "image") {
