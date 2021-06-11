@@ -6,8 +6,9 @@ import styles from "./DishForm.module.scss";
 
 const DishForm = ({ onSubmit }) => {
   const [imgSecureUrl, setImgSecureUrl] = useState("");
-  const [imgToUpload, setImgToUpload] = useState({});
+  // const [imgToUpload, setImgToUpload] = useState({});
   const [imgName, setImgName] = useState("");
+  const [imageUploadedState, setImageUploadedState] = useState(false);
   const [cost, setCost] = useState("$");
   const [ingredients, setIngredients] = useState([]);
   const [ingrName, setIngrName] = useState("");
@@ -49,54 +50,64 @@ const DishForm = ({ onSubmit }) => {
     return cammelCaseName;
   };
 
-  async function uploadImage(event) {
-    event.preventDefault()
+  async function uploadImage(theImage) {
     const formData = new FormData();
-    formData.append("file", imgToUpload[0]);
+    formData.append("file", theImage[0]);
     formData.append("upload_preset", "yminrbyz");
-
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/dsaz6niwp/image/upload`,
-      {
-        method: "POST",
-        body: formData,
+    
+    if (!!theImage.length) {
+      try {
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/dsaz6niwp/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+  
+        setImageUploadedState(response.status == 200 ? true : false);
+        const data = await response.json();
+        setImgSecureUrl(data.secure_url);
+      } catch (error) {
+        console.log(error);
       }
-    );
-
-    const data = await response.json();
-    setImgSecureUrl(data.secure_url);
+    }
   }
 
   const handleOnSubmit = (e) => {
-    const { currentTarget } = e;
-    const fields = Array.from(currentTarget.elements);
-    const ingredients = [];
-    let pageName = "";
-    const data = {};
+    if (imageUploadedState && !!ingredients.length) {
+      const { currentTarget } = e;
+      const fields = Array.from(currentTarget.elements);
+      const ingredients = [];
+      let pageName = "";
+      const data = {};
 
-    fields.forEach((field: HTMLFormElement) => {
-      if (!field.name) return;
+      fields.forEach((field: HTMLFormElement) => {
+        if (!field.name) return;
 
-      if (field.name === "name") {
-        pageName = convertPageName(field.value);
+        if (field.name === "name") {
+          pageName = convertPageName(field.value);
+        }
+        if (field.name === "ingredient") {
+          ingredients.push(field.value.toLowerCase());
+          data["neededIngredients"] = ingredients;
+        }
+        if (field.name === "image") {
+          data["image"] = imgSecureUrl.toString();
+        } else {
+          data[field.name] = field.value;
+        }
+      });
+
+      data["availableIngredients"] = [];
+      data["pageName"] = pageName;
+      data["url"] = `/dishPage/${pageName}`;
+
+      if (typeof onSubmit === "function") {
+        onSubmit(data, e);
       }
-      if (field.name === "ingredient") {
-        ingredients.push(field.value.toLowerCase());
-        data["neededIngredients"] = ingredients;
-      }
-      if (field.name === "image") {
-        data["image"] = imgSecureUrl.toString();
-      } else {
-        data[field.name] = field.value;
-      }
-    });
-
-    data["availableIngredients"] = [];
-    data["pageName"] = pageName;
-    data["url"] = `/dishPage/${pageName}`;
-
-    if (typeof onSubmit === "function") {
-      onSubmit(data, e);
+    } else {
+      e.preventDefault();
     }
   };
 
@@ -137,7 +148,7 @@ const DishForm = ({ onSubmit }) => {
         <div className={styles.inputWrapper}>
           <div className={styles.inputWrapper_fileUploadInput}>
             <label htmlFor="image">Upload dish image</label>
-            <span> {imgName}</span>
+            <span>{!!imgName && !imageUploadedState ? 'uploading: ' : ''}{imgName}</span>
             <input
               required
               type="file"
@@ -145,16 +156,16 @@ const DishForm = ({ onSubmit }) => {
               name="image"
               accept="image/png, image/jpeg, image/jpg"
               onChange={(event) => {
-                setImgToUpload(event.currentTarget.files);
                 //after upload is finished setImageDirectory
                 setImgName(
                   event.currentTarget.files.length
                     ? event.currentTarget.files[0].name
                     : ""
                 );
+                setImageUploadedState(false);
+                uploadImage(event.currentTarget.files);
               }}
-              ></input>
-              <button onClick={uploadImage}>upload</button>
+            ></input>
           </div>
         </div>
         <div className={styles.inputWrapper}>
@@ -184,9 +195,16 @@ const DishForm = ({ onSubmit }) => {
           </div>
         </div>
 
-        <button className={styles.submitButton} type="submit">
-          Add dish
-        </button>
+        {imageUploadedState && !!ingredients.length ? (
+          <button
+            className={`${styles.submitButton} ${styles.submitButton___active}`}
+            type="submit"
+          >
+            Add dish
+          </button>
+        ) : (
+          <button className={styles.submitButton}>Add dish</button>
+        )}
       </form>
     </div>
   );

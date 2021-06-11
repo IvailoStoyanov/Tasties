@@ -45,8 +45,6 @@ export default function Home({
   // const { user, logIn, logOut } = useAuth();
 
   async function handleOnSubmit(data: any, e) {
-    console.log('we also need to add the ingredients that have never been mentioned inside the missing or available ingredients');
-    
     e.preventDefault();
 
     await createDish(data);
