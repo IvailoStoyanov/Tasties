@@ -153,7 +153,7 @@ const DishDetails = ({
         <h1>{extendedDishData.name}</h1>
         <div className={styles.dishIntro}>
           <img
-            src={extendedDishData.image[0].url}
+            src={!!extendedDishData.image[0].thumbnails ? extendedDishData.image[0].thumbnails.large.url : extendedDishData.image[0].url}
             alt={`image of ${extendedDishData.name}`}
           />
           <ul>

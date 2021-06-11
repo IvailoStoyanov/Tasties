@@ -78,7 +78,7 @@ export default function Home({
               <Dish
                 key={fields.pageName}
                 url={fields.url}
-                image={fields.image[0].url}
+                image={!!fields.image[0].thumbnails ? fields.image[0].thumbnails.large.url : fields.image[0].url}
                 dishName={fields.name}
                 time={fields.time}
                 cost={fields.cost}
