@@ -158,7 +158,7 @@ const DishDetails = ({
           />
           <ul>
             {getDishAvailability()}
-            <li>Time: {extendedDishData.time}</li>
+            <li>Time: {extendedDishData.time} min</li>
             <li>Price: {extendedDishData.cost}</li>
           </ul>
         </div>

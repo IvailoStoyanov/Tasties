@@ -169,7 +169,7 @@ const DishForm = ({ onSubmit }) => {
           </div>
         </div>
         <div className={styles.inputWrapper}>
-          <label htmlFor="name">Ingredients:</label>
+          <label htmlFor="name">Needed ingredient:</label>
           <div className={styles.inputWrapper_addedIngredients}>
             {ingredients.map((name) => {
               return (
