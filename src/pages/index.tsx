@@ -5,6 +5,8 @@ import styles from "../styles/Home.module.scss";
 import { getAllDishes, createDish } from "../lib/dishes";
 import { getAllIngredients } from "../lib/ingredients";
 import { DishesContext } from "../../contexts/DishesContext";
+import { AuthContext } from "../../contexts/AuthContext";
+
 import { useState, useEffect, useContext } from "react";
 
 import Dish from "../components/Dish";
@@ -22,6 +24,9 @@ export default function Home({
     dishesContext,
     setDishesContext,
   } = useContext(DishesContext);
+
+  const { user, login, logout, authReady } = useContext(AuthContext);
+  console.log(user);
 
   useEffect(() => {
     console.log(
@@ -60,17 +65,29 @@ export default function Home({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* {!user && (
-        <p>
-          <button onClick={logIn}>Log in</button>
-        </p>
-      )}
-      {user && (
-        <p>
-          <button onClick={logOut}>Log out</button>
-        </p>
-      )} */}
 
+
+      {authReady && (
+        <>
+          {!user && (
+            <p>
+              <button onClick={login}>Sign up / Log in</button>
+            </p>
+          )}
+          {user && (
+            <p>
+              {user.email} {user.id}
+            </p>
+          )}
+          {user && (
+            <p>
+              <button onClick={logout}>Log out</button>
+            </p>
+          )}
+        </>
+      )}
+      
+      
       <main className={styles.main}>
         <ul>
           {dishesContext.map(({ fields }) => {
@@ -78,7 +95,11 @@ export default function Home({
               <Dish
                 key={fields.pageName}
                 url={fields.url}
-                image={!!fields.image[0].thumbnails ? fields.image[0].thumbnails.large.url : fields.image[0].url}
+                image={
+                  !!fields.image[0].thumbnails
+                    ? fields.image[0].thumbnails.large.url
+                    : fields.image[0].url
+                }
                 dishName={fields.name}
                 time={fields.time}
                 cost={fields.cost}

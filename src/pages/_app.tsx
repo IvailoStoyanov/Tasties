@@ -1,18 +1,17 @@
-// import { AuthProvider } from "../hooks/useAuth";
+import { AuthContextProvider } from "../../contexts/AuthContext";
 import { DishesProvider } from "../../contexts/DishesContext";
-import Navigation from "../components/Navigation"
-
+import Navigation from "../components/Navigation";
 
 import "../styles/globals.scss";
 
 function MyApp({ Component, pageProps }) {
   return (
-    // <AuthProvider>
-    // </AuthProvider>
-    <DishesProvider>
-      <Component {...pageProps} />
-      <Navigation />
-    </DishesProvider>
+    <AuthContextProvider>
+      <DishesProvider>
+        <Component {...pageProps} />
+        <Navigation />
+      </DishesProvider>
+    </AuthContextProvider>
   );
 }
 

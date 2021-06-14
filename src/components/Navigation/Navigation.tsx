@@ -27,7 +27,7 @@ const Navigation = () => {
             <ActiveLink href="/missingIngredients" activeClassName="active">
               <div>
                 <img src="/icons/list.svg" />
-                <a>Ingredients</a>
+                <a>Shopping list</a>
               </div>
             </ActiveLink>
           </li>
