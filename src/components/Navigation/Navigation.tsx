@@ -1,9 +1,13 @@
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 import ActiveLink from "../ActiveLink/ActiveLink";
 
 import styles from "./Navigation.module.scss";
 
 const Navigation = () => {
+  const { user } = useContext(AuthContext);
   return (
+    user &&
     <>
       <style jsx>{`
         div {
