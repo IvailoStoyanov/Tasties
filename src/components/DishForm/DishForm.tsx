@@ -1,5 +1,3 @@
-// import { FaHeart, FaShareAlt } from 'react-icons/fa';
-
 import { useRef, useState } from "react";
 
 import styles from "./DishForm.module.scss";
@@ -154,7 +152,6 @@ const DishForm = ({ onSubmit }) => {
               name="image"
               accept="image/png, image/jpeg, image/jpg"
               onChange={(event) => {
-                //after upload is finished setImageDirectory
                 setImgName(
                   event.currentTarget.files.length
                     ? event.currentTarget.files[0].name

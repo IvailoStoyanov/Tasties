@@ -1,5 +1,6 @@
 export default async (req, res) => {
   if (req.method === "GET") {
+    console.log('EXEC?');
     const response = await fetch(
       `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
       {
@@ -24,8 +25,6 @@ export default async (req, res) => {
   }
 
   if (req.method === "POST") {
-
-    console.log('WHEN DOES IT COME HERE?', req.body);
     // const { authorization } = req.headers;
 
     // const auth = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOING}/user`, {

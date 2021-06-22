@@ -1,9 +1,8 @@
 import { DishesContext } from "../../../contexts/DishesContext";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
-import { getAllIngredients } from "../../lib/ingredients";
 import { getAllDishes } from "../../lib/dishes";
-import { getSingleDishes } from "../../lib/dishes";
+import { getSingleDish } from "../../lib/dishes";
 import {
   updateMissingIngredients,
   updateAvailableIngredients,
@@ -14,7 +13,7 @@ import styles from "./DishPage.module.scss";
 export const getStaticProps = async (context) => {
   const id = context.params.slug;
 
-  const singleDish = await getSingleDishes(id);
+  const singleDish = await getSingleDish(id);
 
   return {
     props: {

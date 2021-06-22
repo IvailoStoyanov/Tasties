@@ -5,7 +5,6 @@ import Checkbox from "../components/Checkbox";
 
 import { DishesContext } from "../../contexts/DishesContext";
 import { useContext, useState, useEffect, useRef } from "react";
-import { getAllIngredients } from "../lib/ingredients";
 
 import {
   updateMissingIngredients,
@@ -32,7 +31,7 @@ export default function MissingIngredients() {
 
   const ingListElement = useRef(null);
 
-  const { user, login, logout, authReady } = useContext(AuthContext);
+  const { user, logout, authReady } = useContext(AuthContext);
 
   useEffect(() => {
     //This fetch could be placed within the api folder?!

@@ -1,5 +1,3 @@
-import { auth } from "./auth";
-
 export async function getAllDishes() {
         // the response does not need to go to api.airtable.com it can go to lib/dishes.js instead - if it is available at that point
   const response = await fetch(
@@ -15,7 +13,7 @@ export async function getAllDishes() {
   return records;
 }
 
-export async function getSingleDishes(id) {
+export async function getSingleDish(id) {
         // the response does not need to go to api.airtable.com it can go to lib/dishes.js instead - if it is available at that point
   const response = await fetch(
     `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Dishes/${id}`,

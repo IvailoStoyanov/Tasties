@@ -1,10 +1,3 @@
-export async function getAllIngredients() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/getIngredients`
-  );
-  const { allIngredients } = await response.json();
-  return allIngredients;
-}
 
 export async function updateMissingIngredients(data, arrayID) {
   // const user = auth.currentUser();

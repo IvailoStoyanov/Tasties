@@ -4,7 +4,7 @@ import styles from "../styles/Home.module.scss";
 import { DishesContext } from "../../contexts/DishesContext";
 import { AuthContext } from "../../contexts/AuthContext";
 
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 
 import Dish from "../components/Dish";
 import DishForm from "../components/DishForm";
@@ -28,8 +28,12 @@ export default function Home() {
     setDishesContext,
   } = useContext(DishesContext);
 
-  const { user, login, logout, authReady } = useContext(AuthContext);
-  // console.log("something here is doubled !!!!");
+  const { 
+    user,
+    login, 
+    logout, 
+    authReady 
+  } = useContext(AuthContext);
 
   useEffect(() => {
     if (
@@ -95,20 +99,11 @@ export default function Home() {
           setDishesContext([]);
         });
     }
-    console.log("Write a separate if statement for the dishes!");
-
-    console.log(
-      "Optimisation: there is a fetch request for index.json on load of home page, check dev tfools Network index.json"
-    );
   }, [user, authReady]);
 
   async function handleOnSubmit(data: any, e) {
-    // e.preventDefault();
     data.userId = user.id;
     await createDish(data);
-
-    // const dishes = await getAllDishes();
-    // setDishesContext(dishes);
   }
 
   return (
