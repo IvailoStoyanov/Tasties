@@ -8,7 +8,7 @@ import { useState, useEffect, useContext } from "react";
 
 import Dish from "../components/Dish";
 import DishForm from "../components/DishForm";
-import { createDish, getAllDishes } from "../lib/dishes";
+import { createDish } from "../lib/dishes";
 
 export default function Home() {
   const {
@@ -32,7 +32,13 @@ export default function Home() {
   // console.log("something here is doubled !!!!");
 
   useEffect(() => {
-    if (authReady && user && !availableIngredientsContext.length && !missingIngredientsContext.length && !cartIngredientsContext.length) {
+    if (
+      authReady &&
+      user &&
+      !availableIngredientsContext.length &&
+      !missingIngredientsContext.length &&
+      !cartIngredientsContext.length
+    ) {
       //FetchIngredients
       fetch(
         "/.netlify/functions/ingredients",
@@ -48,7 +54,9 @@ export default function Home() {
         .then(({ data }) => {
           data.forEach((list) => {
             if (list.fields.name === "availableIngredients") {
-              setAvailableIngredientsContext(list.fields.ingredients ? list.fields.ingredients : []);
+              setAvailableIngredientsContext(
+                list.fields.ingredients ? list.fields.ingredients : []
+              );
               setAvailableIngArrayID(list.id);
             }
             if (list.fields.name === "missingIngredients") {
@@ -56,7 +64,6 @@ export default function Home() {
               setMissingIngArrayID(list.id);
             }
             if (list.fields.name === "cartIngredients") {
-              console.log(list.id);
               setCartIngredientsContext(list.fields.ingredients);
               setCartIngArrayID(list.id);
             }
@@ -67,27 +74,28 @@ export default function Home() {
           setMissingIngredientsContext([]);
           setCartIngredientsContext([]);
         });
-
-        //FetchDishes
-        fetch(
-          "/.netlify/functions/dishes",
-          user && {
-            headers: {
-              Authorization: "Bearer " + user.token.access_token,
-            },
-          }
-          )
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            setDishesContext(data.data);
-          })
-          .catch(() => {
-            setDishesContext([]);
-          });
     }
-    console.log('Write a separate if statement for the dishes!');
+    if (authReady && user && !dishesContext.length) {
+      //FetchDishes
+      fetch(
+        "/.netlify/functions/dishes",
+        user && {
+          headers: {
+            Authorization: "Bearer " + user.token.access_token,
+          },
+        }
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setDishesContext(data.data);
+        })
+        .catch(() => {
+          setDishesContext([]);
+        });
+    }
+    console.log("Write a separate if statement for the dishes!");
 
     console.log(
       "Optimisation: there is a fetch request for index.json on load of home page, check dev tfools Network index.json"
@@ -95,12 +103,12 @@ export default function Home() {
   }, [user, authReady]);
 
   async function handleOnSubmit(data: any, e) {
-    e.preventDefault();
-    data.userID = user.id;
+    // e.preventDefault();
+    data.userId = user.id;
     await createDish(data);
 
-    const dishes = await getAllDishes();
-    setDishesContext(dishes);
+    // const dishes = await getAllDishes();
+    // setDishesContext(dishes);
   }
 
   return (

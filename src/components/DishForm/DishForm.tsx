@@ -100,7 +100,6 @@ const DishForm = ({ onSubmit }) => {
 
       data["availableIngredients"] = [];
       data["url"] = `/dishPage/${pageName}`;
-      data['userID'] = ''
 
       if (typeof onSubmit === "function") {
         onSubmit(data, e);
