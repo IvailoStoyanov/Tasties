@@ -1,7 +1,9 @@
 import { DishesContext } from "../../../contexts/DishesContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { getAllIngredients } from "../../lib/ingredients";
 import { getAllDishes } from "../../lib/dishes";
+import { getSingleDishes } from "../../lib/dishes";
 import {
   updateMissingIngredients,
   updateAvailableIngredients,
@@ -9,75 +11,107 @@ import {
 } from "../../lib/ingredients";
 import styles from "./DishPage.module.scss";
 
-export const getServerSideProps = async (context) => {
+export const getStaticProps = async (context) => {
   const id = context.params.slug;
 
-  const allDishes = await getAllDishes();
-  const data = allDishes.find((dish) => {
-    if (dish.fields.pageName == id) {
-      return dish;
-    }
-  });
-
-  const allIngredientsResponse = await getAllIngredients();
-  const allAvailableIngredients = allIngredientsResponse.some(
-    (e) => e.ingredients && e.name === "availableIngredients"
-  )
-    ? allIngredientsResponse.find(
-        (list) => list.name === "availableIngredients"
-      ).ingredients
-    : [];
-
-  const allMissingIngredients = allIngredientsResponse.some(
-    (e) => e.ingredients && e.name === "missingIngredients"
-  )
-    ? allIngredientsResponse.find((list) => list.name === "missingIngredients")
-        .ingredients
-    : [];
-
-  const allCartIngredients = allIngredientsResponse.some(
-    (e) => e.ingredients && e.name === "cartIngredients"
-  )
-    ? allIngredientsResponse.find((list) => list.name === "cartIngredients")
-        .ingredients
-    : [];
+  const singleDish = await getSingleDishes(id);
 
   return {
     props: {
-      extendedDishData: data.fields,
-      allAvailableIngredients,
-      allMissingIngredients,
-      allCartIngredients,
+      extendedDishData: singleDish,
     },
   };
 };
 
-const DishDetails = ({
-  extendedDishData,
-  allAvailableIngredients,
-  allMissingIngredients,
-  allCartIngredients,
-}) => {
+export const getStaticPaths = async () => {
+  const res = await getAllDishes();
+  const paths = res.map((dish) => {
+    return {
+      params: {
+        slug: dish.id,
+      },
+    };
+  });
+
+  return {
+    paths,
+    fallback: false,
+  };
+};
+
+const DishDetails = ({ extendedDishData }) => {
   const {
+    availableIngArrayID,
+    setAvailableIngArrayID,
     availableIngredientsContext,
     setAvailableIngredientsContext,
+    missingIngArrayID,
+    setMissingIngArrayID,
     missingIngredientsContext,
     setMissingIngredientsContext,
+    cartIngArrayID,
+    setCartIngArrayID,
     cartIngredientsContext,
     setCartIngredientsContext,
   } = useContext(DishesContext);
 
-  const [ownedDishIng, setOwnedDishIng] = useState(
-    extendedDishData.neededIngredients.filter((ing) =>
-      allAvailableIngredients.find((ingredient) => ingredient === ing)
-    )
-  );
+  const { user, login, logout, authReady } = useContext(AuthContext);
+  const [ownedDishIng, setOwnedDishIng] = useState([]);
 
   useEffect(() => {
-    setAvailableIngredientsContext(allAvailableIngredients);
-    setMissingIngredientsContext(allMissingIngredients);
-    setCartIngredientsContext(allCartIngredients);
-  }, []);
+
+    //This fetch could be placed within the api folder?!
+    if (authReady && user && !availableIngredientsContext.length && !missingIngredientsContext.length && !cartIngredientsContext.length) {
+      fetch(
+        "/.netlify/functions/ingredients",
+        user && {
+          headers: {
+            Authorization: "Bearer " + user.token.access_token,
+          },
+        }
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then(({ data }) => {
+          data.forEach(list => {
+            if (list.fields.name === "availableIngredients") {
+              setAvailableIngredientsContext(list.fields.ingredients);
+              setAvailableIngArrayID(list.id);
+              setOwnedDishIng(
+                extendedDishData.neededIngredients.filter((neededIng) =>
+                  list.fields.ingredients.find(
+                    (ingredient) => ingredient === neededIng
+                  )
+                )
+              );
+            }
+            if (list.fields.name === "missingIngredients") {
+              setMissingIngredientsContext(list.fields.ingredients);
+              setMissingIngArrayID(list.id);
+            }
+            if (list.fields.name === "cartIngredients") {
+              console.log(list.id);
+              setCartIngredientsContext(list.fields.ingredients);
+              setCartIngArrayID(list.id);
+            }
+          });
+        })
+        .catch(() => {
+          setAvailableIngredientsContext([]);
+          setMissingIngredientsContext([]);
+          setCartIngredientsContext([]);
+        });
+    }
+
+    if (availableIngredientsContext.length) {
+      setOwnedDishIng(
+        extendedDishData.neededIngredients.filter((ing) =>
+          availableIngredientsContext.find((ingredient) => ingredient === ing)
+        )
+      );
+    }
+  }, [user, authReady]);
 
   const getDishAvailability = () => {
     const needed = extendedDishData.neededIngredients.length;
@@ -93,12 +127,15 @@ const DishDetails = ({
   };
 
   const checkCartIngredients = (eventIngredient) => {
-    if (cartIngredientsContext.includes(eventIngredient)) {
+    if (
+      cartIngredientsContext &&
+      cartIngredientsContext.includes(eventIngredient)
+    ) {
       const filteredCart = cartIngredientsContext.filter((value) => {
         return value !== eventIngredient;
       });
       setCartIngredientsContext(filteredCart);
-      updateCartIngredients(filteredCart);
+      updateCartIngredients(filteredCart, setCartIngArrayID);
     }
   };
 
@@ -114,13 +151,13 @@ const DishDetails = ({
       updateAvailableIngredients([
         ...availableIngredientsContext,
         eventIngredient,
-      ]);
+      ], availableIngArrayID);
 
       const missingIngredientsWithoutSelected =
-        missingIngredientsContext.filter(function (value) {
+        missingIngredientsContext ? missingIngredientsContext.filter(function (value) {
           return value !== eventIngredient;
-        });
-      updateMissingIngredients(missingIngredientsWithoutSelected);
+        }) : [];
+      updateMissingIngredients(missingIngredientsWithoutSelected, missingIngArrayID);
       setMissingIngredientsContext(missingIngredientsWithoutSelected);
 
       checkCartIngredients(eventIngredient);
@@ -134,14 +171,11 @@ const DishDetails = ({
         });
 
       setOwnedDishIng(ingArrayWithoutSelected);
-      updateAvailableIngredients(availableIngredientsWithoutSelected);
+      updateAvailableIngredients(availableIngredientsWithoutSelected, availableIngArrayID);
       setAvailableIngredientsContext(availableIngredientsWithoutSelected);
 
-      updateMissingIngredients([...missingIngredientsContext, eventIngredient]);
-      setMissingIngredientsContext([
-        ...missingIngredientsContext,
-        eventIngredient,
-      ]);
+      updateMissingIngredients(missingIngredientsContext ? [...missingIngredientsContext, eventIngredient] : [eventIngredient], missingIngArrayID);
+      setMissingIngredientsContext(missingIngredientsContext ? [...missingIngredientsContext, eventIngredient] : [eventIngredient]);
 
       checkCartIngredients(eventIngredient);
     }
@@ -149,55 +183,56 @@ const DishDetails = ({
 
   return (
     <>
-      <header className={styles.header}>
-        <h1>{extendedDishData.name}</h1>
-        <div className={styles.dishIntro}>
-          <img
-            src={!!extendedDishData.image[0].thumbnails ? extendedDishData.image[0].thumbnails.large.url : extendedDishData.image[0].url}
-            alt={`image of ${extendedDishData.name}`}
-          />
-          <ul>
-            {getDishAvailability()}
-            <li>Time: {extendedDishData.time} min</li>
-            <li>Price: {extendedDishData.cost}</li>
-          </ul>
-        </div>
-      </header>
-      <div className={styles.ingredients}>
-        <h2>Ingredients</h2>
-        <ul>
-          {extendedDishData.neededIngredients.map((ingr, i) => {
-            ingr = ingr.toLowerCase();
-            return (
-              <li
-                key={i}
-                value={ingr}
-                className={
-                  ownedDishIng.includes(ingr) ? styles.true : styles.false
+      {!user && <p>Place redirect to /home screen</p>}
+      {user && (
+        <>
+          <header className={styles.header}>
+            <h1>{extendedDishData.name}</h1>
+            <div className={styles.dishIntro}>
+              <img
+                src={
+                  !!extendedDishData.image[0].thumbnails
+                    ? extendedDishData.image[0].thumbnails.large.url
+                    : extendedDishData.image[0].url
                 }
-                onClick={toggleState}
-              >
-                <img
-                  src={
-                    ownedDishIng.includes(ingr)
-                      ? "/icons/checkBoxChecked.svg"
-                      : "/icons/checkBoxOutline.svg"
-                  }
-                />
-                <span>{ingr.charAt(0).toUpperCase() + ingr.slice(1)}</span>
-                <img
-                  className={styles.iconRight}
-                  src={
-                    ownedDishIng.includes(ingr)
-                      ? "/icons/checkBoxOutline.svg"
-                      : "/icons/checkBoxCrossed.svg"
-                  }
-                />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+                alt={`image of ${extendedDishData.name}`}
+              />
+              <ul>
+                {getDishAvailability()}
+                <li>Time: {extendedDishData.time} min</li>
+                <li>Price: {extendedDishData.cost}</li>
+              </ul>
+            </div>
+          </header>
+          <div className={styles.ingredients}>
+            <h2>Ingredients</h2>
+            <ul>
+              {extendedDishData.neededIngredients.map((ingr, i) => {
+                ingr = ingr.toLowerCase();
+                return (
+                  <li
+                    key={i}
+                    value={ingr}
+                    className={
+                      ownedDishIng.includes(ingr) ? styles.true : styles.false
+                    }
+                    onClick={toggleState}
+                  >
+                    <img
+                      src={
+                        ownedDishIng.includes(ingr)
+                          ? "/icons/checkBoxChecked.svg"
+                          : "/icons/checkBoxOutline.svg"
+                      }
+                    />
+                    <span>{ingr.charAt(0).toUpperCase() + ingr.slice(1)}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </>
+      )}
     </>
   );
 };

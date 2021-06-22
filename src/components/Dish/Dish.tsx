@@ -4,21 +4,7 @@ import styles from "./Dish.module.scss";
 import Link from "next/link";
 
 const Dish = ({ url, image, dishName, time, cost, needed, allAvailable}) => {
-  const [available, setAvailable] = useState([]);
-
-  const filterAvailable = () => {
-    needed.filter(ing => {
-      allAvailable.includes(ing);
-    });
-
-    return needed.filter(ing => {
-      return allAvailable.includes(ing);
-    });
-  }
-  
-  useEffect(() => {
-    setAvailable(filterAvailable);
-  }, []);
+  const available = needed.filter(ing => allAvailable.includes(ing));
   
   return (
       <>

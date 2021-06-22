@@ -6,7 +6,6 @@ import styles from "./DishForm.module.scss";
 
 const DishForm = ({ onSubmit }) => {
   const [imgSecureUrl, setImgSecureUrl] = useState("");
-  // const [imgToUpload, setImgToUpload] = useState({});
   const [imgName, setImgName] = useState("");
   const [imageUploadedState, setImageUploadedState] = useState(false);
   const [cost, setCost] = useState("$");
@@ -100,8 +99,8 @@ const DishForm = ({ onSubmit }) => {
       });
 
       data["availableIngredients"] = [];
-      data["pageName"] = pageName;
       data["url"] = `/dishPage/${pageName}`;
+      data['userID'] = ''
 
       if (typeof onSubmit === "function") {
         onSubmit(data, e);

@@ -13,9 +13,6 @@ const AuthContextProvider = ({ children }) => {
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
-    // netlifyidentity.on('init', (user) => {
-    //     setUser(user);
-    // })
     netlifyidentity.on("login", (user) => {
       setUser(user);
       netlifyidentity.close();

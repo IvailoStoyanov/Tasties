@@ -6,13 +6,13 @@ export async function getAllIngredients() {
   return allIngredients;
 }
 
-export async function updateMissingIngredients(data) {
+export async function updateMissingIngredients(data, arrayID) {
   // const user = auth.currentUser();
   // Bearer should be user.token!
   // the fetch destination is not secure as a direct string
   try {
     const res = await fetch(
-      `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients/rec9mAOt5sqhA1OXV`,
+      `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients/${arrayID}`,
       {
         method: "PATCH",
         body: JSON.stringify({
@@ -31,13 +31,13 @@ export async function updateMissingIngredients(data) {
   }
 }
 
-export async function updateCartIngredients(data) {
+export async function updateCartIngredients(data, arrayID) {
   // const user = auth.currentUser();
   // Bearer should be user.token!
   // the fetch destination is not secure as a direct string
   try {
     const res = await fetch(
-      `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients/rechF0VXZ1GtLBjRb`,
+      `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients/${arrayID}`,
       {
         method: "PATCH",
         body: JSON.stringify({
@@ -55,13 +55,13 @@ export async function updateCartIngredients(data) {
   }
 }
 
-export async function updateAvailableIngredients(data) {
+export async function updateAvailableIngredients(data, arrayID) {
   // const user = auth.currentUser();
   // Bearer should be user.token!
   // the fetch destination is not secure as a direct string
   try {
     const res = await fetch(
-      `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients/recwhc8EofnUSTRF2`,
+      `https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients/${arrayID}`,
       {
         method: "PATCH",
         body: JSON.stringify({

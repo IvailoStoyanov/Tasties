@@ -12,43 +12,71 @@ import {
   updateCartIngredients,
   updateAvailableIngredients,
 } from "../lib/ingredients";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function MissingIngredients() {
   const {
+    availableIngArrayID,
+    setAvailableIngArrayID,
     availableIngredientsContext,
     setAvailableIngredientsContext,
+    missingIngArrayID,
+    setMissingIngArrayID,
     missingIngredientsContext,
     setMissingIngredientsContext,
+    cartIngArrayID,
+    setCartIngArrayID,
     cartIngredientsContext,
     setCartIngredientsContext,
   } = useContext(DishesContext);
 
   const ingListElement = useRef(null);
 
-  const fetchAvailableIngredients = async () => {
-    const allIngredientsResponse = await getAllIngredients();
+  const { user, login, logout, authReady } = useContext(AuthContext);
 
-    const availableIngredients = allIngredientsResponse.find(
-      (list) => list.name === "availableIngredients"
-    ).ingredients;
-    setAvailableIngredientsContext(availableIngredients);
-
-    const missingIngredients = allIngredientsResponse.find(
-      (list) => list.name === "missingIngredients"
-    ).ingredients;
-    setMissingIngredientsContext(missingIngredients);
-
-    const cartIngredients = allIngredientsResponse.find(
-      (list) => list.name === "cartIngredients"
-    ).ingredients;
-    setCartIngredientsContext(cartIngredients);
-  };
-
-  availableIngredientsContext.length === 0 &&
-  missingIngredientsContext.length === 0 &&
-  cartIngredientsContext.length === 0
-    ? fetchAvailableIngredients()
-    : null;
+  useEffect(() => {
+    //This fetch could be placed within the api folder?!
+    if (
+      authReady &&
+      user &&
+      !availableIngredientsContext.length &&
+      !missingIngredientsContext.length &&
+      !cartIngredientsContext.length
+    ) {
+      fetch(
+        "/.netlify/functions/ingredients",
+        user && {
+          headers: {
+            Authorization: "Bearer " + user.token.access_token,
+          },
+        }
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then(({ data }) => {
+          data.forEach((list) => {
+            if (list.fields.name === "availableIngredients") {
+              setAvailableIngredientsContext(list.fields.ingredients);
+              setAvailableIngArrayID(list.id);
+            }
+            if (list.fields.name === "missingIngredients") {
+              setMissingIngredientsContext(list.fields.ingredients);
+              setMissingIngArrayID(list.id);
+            }
+            if (list.fields.name === "cartIngredients") {
+              setCartIngredientsContext(list.fields.ingredients);
+              setCartIngArrayID(list.id);
+            }
+          });
+        })
+        .catch(() => {
+          setAvailableIngredientsContext([]);
+          setMissingIngredientsContext([]);
+          setCartIngredientsContext([]);
+        });
+    }
+  }, [user, authReady]);
 
   const removeFromMissing = (e) => {
     const currentIngr = e.target.parentElement.id;
@@ -56,7 +84,7 @@ export default function MissingIngredients() {
       missingIngredientsContext.filter((ingr) => ingr !== currentIngr)
     );
     updateMissingIngredients(
-      missingIngredientsContext.filter((ingr) => ingr !== currentIngr)
+      missingIngredientsContext.filter((ingr) => ingr !== currentIngr), missingIngArrayID
     );
   };
 
@@ -66,7 +94,7 @@ export default function MissingIngredients() {
       cartIngredientsContext.filter((ingr) => ingr !== currentIngr)
     );
     updateCartIngredients(
-      cartIngredientsContext.filter((ingr) => ingr !== currentIngr)
+      cartIngredientsContext.filter((ingr) => ingr !== currentIngr), cartIngArrayID
     );
   };
 
@@ -76,8 +104,8 @@ export default function MissingIngredients() {
       ? setCartIngredientsContext([...cartIngredientsContext, currentIngr])
       : setCartIngredientsContext([currentIngr]);
     cartIngredientsContext
-      ? updateCartIngredients([...cartIngredientsContext, currentIngr])
-      : updateCartIngredients([currentIngr]);
+      ? updateCartIngredients([...cartIngredientsContext, currentIngr], cartIngArrayID)
+      : updateCartIngredients([currentIngr], cartIngArrayID);
     removeFromMissing(e);
   };
 
@@ -90,8 +118,8 @@ export default function MissingIngredients() {
         ])
       : setMissingIngredientsContext([currentIngr]);
     missingIngredientsContext
-      ? updateMissingIngredients([...missingIngredientsContext, currentIngr])
-      : updateMissingIngredients([currentIngr]);
+      ? updateMissingIngredients([...missingIngredientsContext, currentIngr], missingIngArrayID)
+      : updateMissingIngredients([currentIngr], missingIngArrayID);
     removeFromCartList(e);
   };
 
@@ -109,7 +137,7 @@ export default function MissingIngredients() {
     updateCartIngredients(
       cartIngredientsContext.filter((ing) => {
         return !getTickedIngredients(cartListIngredientsArray).includes(ing);
-      })
+      }), cartIngArrayID
     );
 
     setCartIngredientsContext(
@@ -130,7 +158,7 @@ export default function MissingIngredients() {
       ...getTickedIngredients([
         ...ingListElement.current.querySelectorAll("li"),
       ]),
-    ]);
+    ], availableIngArrayID);
   };
 
   return (

@@ -24,6 +24,8 @@ export default async (req, res) => {
   }
 
   if (req.method === "POST") {
+
+    console.log('WHEN DOES IT COME HERE?');
     // const { authorization } = req.headers;
 
     // const auth = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOING}/user`, {
@@ -56,7 +58,6 @@ export default async (req, res) => {
           fields: {
             name,
             cost,
-            pageName,
             time,
             url,
             neededIngredients,
@@ -65,6 +66,7 @@ export default async (req, res) => {
                 url: image,
               },
             ],
+            userId
           },
         },
       ],
