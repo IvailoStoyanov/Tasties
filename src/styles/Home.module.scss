@@ -1,9 +1,30 @@
 .container {
   min-height: 100vh;
+
+  .introWrapper {
+    height: 100vh;
+    position: relative;
+    text-align: center;
+
+    h1 {
+      margin: 0;
+    }
+    
+    button {
+      border: none;
+      border-radius: 15px;
+      padding: 15px 40px;
+      color: #fff;
+      background: #55B074;
+      position: relative;
+      bottom: -24%;
+      font-size: 15px;
+    }
+  }
 }
 
 .main {
-  padding: 5rem 0 0 0 ;
+  padding: 2rem 0 0 0 ;
 
   ul {
     list-style: none;

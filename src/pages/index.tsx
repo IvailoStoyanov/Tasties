@@ -7,7 +7,9 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useEffect, useContext } from "react";
 
 import Dish from "../components/Dish";
+import Intro from "../components/Intro";
 import DishForm from "../components/DishForm";
+import UserNav from "../components/UserNav";
 import { createDish } from "../lib/dishes";
 
 export default function Home() {
@@ -115,17 +117,14 @@ export default function Home() {
       {authReady && (
         <>
           {!user && (
-            <p>
-              Welcome page
+            <div className={styles.introWrapper}>
+              <Intro />
               <button onClick={login}>Sign up / Log in</button>
-            </p>
+            </div>
           )}
           {user && (
             <>
-              <p>
-                {user.email} {user.id}
-                <button onClick={logout}>Log out</button>
-              </p>
+            <UserNav />
               <main className={styles.main}>
                 <ul>
                   {dishesContext.map(({ fields }, id) => {

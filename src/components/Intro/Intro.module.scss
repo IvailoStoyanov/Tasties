@@ -1,0 +1,25 @@
+.veggieCircle {
+  top: 13%;
+  position: relative;
+
+  .textWrapper {
+    position: absolute;
+    width: 180px;
+    top: 37%;
+    left: calc(50% - 90px);
+
+    p {
+      font-size: 15px;
+      color: #828282;
+
+      span {
+        color: black;
+        font-weight: 600;
+      }
+    }
+  }
+
+  img {
+    width: 100%;
+  }
+}

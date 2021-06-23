@@ -3,6 +3,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { getAllDishes } from "../../lib/dishes";
 import { getSingleDish } from "../../lib/dishes";
+import UserNav from "../../components/UserNav"
 import {
   updateMissingIngredients,
   updateAvailableIngredients,
@@ -58,9 +59,14 @@ const DishDetails = ({ extendedDishData }) => {
   const [ownedDishIng, setOwnedDishIng] = useState([]);
 
   useEffect(() => {
-
     //This fetch could be placed within the api folder?!
-    if (authReady && user && !availableIngredientsContext.length && !missingIngredientsContext.length && !cartIngredientsContext.length) {
+    if (
+      authReady &&
+      user &&
+      !availableIngredientsContext.length &&
+      !missingIngredientsContext.length &&
+      !cartIngredientsContext.length
+    ) {
       fetch(
         "/.netlify/functions/ingredients",
         user && {
@@ -73,7 +79,7 @@ const DishDetails = ({ extendedDishData }) => {
           return res.json();
         })
         .then(({ data }) => {
-          data.forEach(list => {
+          data.forEach((list) => {
             if (list.fields.name === "availableIngredients") {
               setAvailableIngredientsContext(list.fields.ingredients);
               setAvailableIngArrayID(list.id);
@@ -147,16 +153,20 @@ const DishDetails = ({ extendedDishData }) => {
         ...availableIngredientsContext,
         eventIngredient,
       ]);
-      updateAvailableIngredients([
-        ...availableIngredientsContext,
-        eventIngredient,
-      ], availableIngArrayID);
+      updateAvailableIngredients(
+        [...availableIngredientsContext, eventIngredient],
+        availableIngArrayID
+      );
 
-      const missingIngredientsWithoutSelected =
-        missingIngredientsContext ? missingIngredientsContext.filter(function (value) {
-          return value !== eventIngredient;
-        }) : [];
-      updateMissingIngredients(missingIngredientsWithoutSelected, missingIngArrayID);
+      const missingIngredientsWithoutSelected = missingIngredientsContext
+        ? missingIngredientsContext.filter(function (value) {
+            return value !== eventIngredient;
+          })
+        : [];
+      updateMissingIngredients(
+        missingIngredientsWithoutSelected,
+        missingIngArrayID
+      );
       setMissingIngredientsContext(missingIngredientsWithoutSelected);
 
       checkCartIngredients(eventIngredient);
@@ -170,11 +180,23 @@ const DishDetails = ({ extendedDishData }) => {
         });
 
       setOwnedDishIng(ingArrayWithoutSelected);
-      updateAvailableIngredients(availableIngredientsWithoutSelected, availableIngArrayID);
+      updateAvailableIngredients(
+        availableIngredientsWithoutSelected,
+        availableIngArrayID
+      );
       setAvailableIngredientsContext(availableIngredientsWithoutSelected);
 
-      updateMissingIngredients(missingIngredientsContext ? [...missingIngredientsContext, eventIngredient] : [eventIngredient], missingIngArrayID);
-      setMissingIngredientsContext(missingIngredientsContext ? [...missingIngredientsContext, eventIngredient] : [eventIngredient]);
+      updateMissingIngredients(
+        missingIngredientsContext
+          ? [...missingIngredientsContext, eventIngredient]
+          : [eventIngredient],
+        missingIngArrayID
+      );
+      setMissingIngredientsContext(
+        missingIngredientsContext
+          ? [...missingIngredientsContext, eventIngredient]
+          : [eventIngredient]
+      );
 
       checkCartIngredients(eventIngredient);
     }
@@ -182,9 +204,10 @@ const DishDetails = ({ extendedDishData }) => {
 
   return (
     <>
-      {!user && <p>Place redirect to /home screen</p>}
+      {!user && <UserNav />}
       {user && (
         <>
+          <UserNav />
           <header className={styles.header}>
             <h1>{extendedDishData.name}</h1>
             <div className={styles.dishIntro}>

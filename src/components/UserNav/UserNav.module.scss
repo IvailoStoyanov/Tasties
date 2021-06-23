@@ -1,0 +1,28 @@
+.userWrapper {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 20px 20px 20px;
+
+  .user {
+    display: flex;
+
+    p {
+      margin: 5px;
+    }
+  }
+
+  button {
+    border: none;
+    display: flex;
+    background: none;
+    font-weight: 600;
+
+    img {
+      padding-left: 5px;
+    }
+  }
+
+  button, .user {
+    font-size: 15px;
+  }
+}

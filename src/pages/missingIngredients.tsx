@@ -4,7 +4,7 @@ import styles from "../styles/MissingIngredients.module.scss";
 import Checkbox from "../components/Checkbox";
 
 import { DishesContext } from "../../contexts/DishesContext";
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 import {
   updateMissingIngredients,
@@ -12,6 +12,8 @@ import {
   updateAvailableIngredients,
 } from "../lib/ingredients";
 import { AuthContext } from "../../contexts/AuthContext";
+
+import UserNav from '../components/UserNav'
 
 export default function MissingIngredients() {
   const {
@@ -31,7 +33,7 @@ export default function MissingIngredients() {
 
   const ingListElement = useRef(null);
 
-  const { user, logout, authReady } = useContext(AuthContext);
+  const { user, authReady } = useContext(AuthContext);
 
   useEffect(() => {
     //This fetch could be placed within the api folder?!
@@ -166,6 +168,7 @@ export default function MissingIngredients() {
         <title>Tastiest</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <UserNav />
       <main className={styles.main}>
         <header>
           <h1>Missing ingredients</h1>
