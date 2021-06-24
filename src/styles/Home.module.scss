@@ -1,3 +1,5 @@
+@import '../styles/colors.scss';
+
 .container {
   min-height: 100vh;
 
@@ -60,13 +62,13 @@
     }
   
     .available {
-      color: #38b000;
+      color: $green;
     }
     .partiallyAvailable {
-      color: #ffa200;
+      color: $yellow;
     }
     .notAvailable {
-      color: #ff0a3b;
+      color: $red;
     }
   }
 }

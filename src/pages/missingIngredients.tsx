@@ -170,10 +170,13 @@ export default function MissingIngredients() {
       </Head>
       <UserNav />
       <main className={styles.main}>
-        <header>
+        <header className={styles.header}>
           <h1>Missing ingredients</h1>
+          <img className={styles.aubergine} src="/icons/aubergine.svg" alt="icon of an aubergine" />
+          <img className={styles.rosemary} src="/icons/rosemary.svg" alt="icon of the spice rosemary" />
         </header>
         <div className={styles.missingItemsWrapper}>
+          <img className={styles.seeds} src="/icons/seeds.svg" alt="icon of seeds" />
           <ul>
             {(missingIngredientsContext ? missingIngredientsContext : []).map(
               (ing) => {
@@ -189,7 +192,7 @@ export default function MissingIngredients() {
         </div>
         <div className={styles.cart}>
           <h2>
-            To Buy <img src="/icons/cart.svg" alt="shopping cart" />
+            Shopping list <img src="/icons/cart.svg" alt="shopping cart" />
           </h2>
           <ul ref={ingListElement}>
             {(cartIngredientsContext ? cartIngredientsContext : []).map(

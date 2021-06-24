@@ -3,7 +3,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { getAllDishes } from "../../lib/dishes";
 import { getSingleDish } from "../../lib/dishes";
-import UserNav from "../../components/UserNav"
+import UserNav from "../../components/UserNav";
 import {
   updateMissingIngredients,
   updateAvailableIngredients,
@@ -212,6 +212,12 @@ const DishDetails = ({ extendedDishData }) => {
             <h1>{extendedDishData.name}</h1>
             <div className={styles.dishIntro}>
               <img
+                className={styles.leaf}
+                src="/icons/leaf.svg"
+                alt="leaf"
+              ></img>
+              <img
+                className={styles.dishImage}
                 src={
                   !!extendedDishData.image[0].thumbnails
                     ? extendedDishData.image[0].thumbnails.large.url
@@ -225,6 +231,11 @@ const DishDetails = ({ extendedDishData }) => {
                 <li>Price: {extendedDishData.cost}</li>
               </ul>
             </div>
+            <img
+              className={styles.stalk}
+              src="/icons/leafStalk.svg"
+              alt="leaf"
+            ></img>
           </header>
           <div className={styles.ingredients}>
             <h2>Ingredients</h2>

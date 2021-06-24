@@ -1,13 +1,15 @@
+@import "../../styles/colors.scss";
+
 .dish {
   display: flex;
   margin: 0 20px 35px 20px;
-  border-radius: 5px;
+  border-radius: 15px;
   box-shadow: 41px 30px 67px -13px rgba(153, 153, 153, 0.61);
 
   img {
     max-width: 27%;
     object-fit: cover;
-    border-radius: 5px 0 0 5px;
+    border-radius: 15px 0 0 15px;
   }
 
   .textWrapper {
@@ -25,12 +27,12 @@
   }
 
   .available {
-    color: #38b000;
+    color: $green;
   }
   .partiallyAvailable {
-    color: #ffa200;
+    color: $yellow;
   }
   .notAvailable {
-    color: #ff0a3b;
+    color: $red;
   }
 }

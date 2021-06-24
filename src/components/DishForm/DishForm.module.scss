@@ -1,3 +1,5 @@
+@import "../../styles/colors.scss";
+
 .wrapper {
   position: relative;
   margin-top: 75px;
@@ -77,7 +79,7 @@
         right: 30px;
         background: none;
         border: none;
-        color: #ff0a3b;
+        color: $red;
         font-weight: 600;
       }
 

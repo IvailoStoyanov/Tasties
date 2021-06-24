@@ -9,8 +9,12 @@ const UserNav = () => {
   const router = useRouter();
 
   useEffect(() => {
-    !user && router.push("/");
-  });
+    
+    // setTimeout(() => {
+    //   console.log(!user);
+    //   // !user && router.push("/");
+    // }, 2000)
+  }, []);
 
   return (
     user && (
