@@ -208,62 +208,66 @@ const DishDetails = ({ extendedDishData }) => {
       {user && (
         <>
           <UserNav />
-          <header className={styles.header}>
-            <h1>{extendedDishData.name}</h1>
-            <div className={styles.dishIntro}>
+          <main className={styles.main}>
+            <header className={styles.header}>
+              <h1>{extendedDishData.name}</h1>
+              <div className={styles.dishIntro}>
+                <img
+                  className={styles.leaf}
+                  src="/icons/leaf.svg"
+                  alt="leaf"
+                ></img>
+                <img
+                  className={styles.dishImage}
+                  src={
+                    !!extendedDishData.image[0].thumbnails
+                      ? extendedDishData.image[0].thumbnails.large.url
+                      : extendedDishData.image[0].url
+                  }
+                  alt={`image of ${extendedDishData.name}`}
+                />
+                <ul>
+                  {getDishAvailability()}
+                  <li>Time: {extendedDishData.time} min</li>
+                  <li>Price: {extendedDishData.cost}</li>
+                </ul>
+              </div>
               <img
-                className={styles.leaf}
-                src="/icons/leaf.svg"
+                className={styles.stalk}
+                src="/icons/leafStalk.svg"
                 alt="leaf"
               ></img>
-              <img
-                className={styles.dishImage}
-                src={
-                  !!extendedDishData.image[0].thumbnails
-                    ? extendedDishData.image[0].thumbnails.large.url
-                    : extendedDishData.image[0].url
-                }
-                alt={`image of ${extendedDishData.name}`}
-              />
+            </header>
+            <div className={styles.ingredients}>
+              <h2>Ingredients</h2>
               <ul>
-                {getDishAvailability()}
-                <li>Time: {extendedDishData.time} min</li>
-                <li>Price: {extendedDishData.cost}</li>
+                {extendedDishData.neededIngredients.map((ingr, i) => {
+                  ingr = ingr.toLowerCase();
+                  return (
+                    <li
+                      key={i}
+                      value={ingr}
+                      className={
+                        ownedDishIng.includes(ingr) ? styles.true : styles.false
+                      }
+                      onClick={toggleState}
+                    >
+                      <img
+                        src={
+                          ownedDishIng.includes(ingr)
+                            ? "/icons/checkBoxChecked.svg"
+                            : "/icons/checkBoxOutline.svg"
+                        }
+                      />
+                      <span>
+                        {ingr.charAt(0).toUpperCase() + ingr.slice(1)}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
-            <img
-              className={styles.stalk}
-              src="/icons/leafStalk.svg"
-              alt="leaf"
-            ></img>
-          </header>
-          <div className={styles.ingredients}>
-            <h2>Ingredients</h2>
-            <ul>
-              {extendedDishData.neededIngredients.map((ingr, i) => {
-                ingr = ingr.toLowerCase();
-                return (
-                  <li
-                    key={i}
-                    value={ingr}
-                    className={
-                      ownedDishIng.includes(ingr) ? styles.true : styles.false
-                    }
-                    onClick={toggleState}
-                  >
-                    <img
-                      src={
-                        ownedDishIng.includes(ingr)
-                          ? "/icons/checkBoxChecked.svg"
-                          : "/icons/checkBoxOutline.svg"
-                      }
-                    />
-                    <span>{ingr.charAt(0).toUpperCase() + ingr.slice(1)}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          </main>
         </>
       )}
     </>
