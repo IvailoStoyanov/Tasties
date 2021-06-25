@@ -1,15 +1,82 @@
 @import "../../styles/colors.scss";
+@import "../../styles/animations.scss";
 
 .wrapper {
   position: relative;
   margin-top: 75px;
-  background: #f5f5f5;
-  padding: 40px 20px 120px 20px;
+  // background: #f5f5f5;
 
-  h2 {
-    position: absolute;
-    top: -17px;
-    margin: 0;
+  margin: 0 20px 120px 20px;
+  border-radius: 15px;
+  box-shadow: 41px 30px 67px -13px rgba(153, 153, 153, 0.61);
+
+  .cta {
+    display: flex;
+
+    .cta_iconWrapper.active {
+      border-radius: 15px 0 0 0;
+      background: $red;
+
+      span {
+        transform: rotate(90deg);
+      }
+
+      span:last-child {
+        left: 50%;
+        right: 50%;
+      }
+    }
+
+    &_iconWrapper {
+      position: relative;
+      width: 27%;
+      height: 70px;
+      border-radius: 15px 0 0 15px;
+      background: $green;
+      transition: all linear 0.3s;
+
+      span {
+        position: absolute;
+        transition: 0.3s;
+        background: white;
+        border-radius: 2px;
+      }
+
+      span:first-child {
+        top: 29%;
+        bottom: 29%;
+        width: 5%;
+        left: 47.5%;
+      }
+      span:last-child {
+        left: 36%;
+        right: 36%;
+        height: 7%;
+        top: 46.5%;
+      }
+    }
+
+    h2 {
+      padding-top: 22px;
+      padding-left: 20px;
+      margin: 0;
+      flex-grow: 1;
+      vertical-align: middle;
+    }
+  }
+
+  form {
+    padding: 0 20px;
+    max-height: 0;
+    transition: all 0.3s linear;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  form.active {
+    padding: 30px 20px;
+    max-height: 2000px;
+    animation: appear-bottom 0.5s ease 0.6s forwards;
   }
 
   .inputWrapper {
@@ -18,18 +85,20 @@
     label {
       font-size: 17px;
       padding-bottom: 4px;
+      padding-left: 7px;
     }
 
     input {
       width: 100%;
       border: none;
-      border-radius: 4px;
+      border-radius: 15px;
       font-size: 15px;
-      margin-top: 5px;
+      margin-top: 10px;
+      background: $gray;
     }
 
     .dishName {
-      padding: 7px 14px;
+      padding: 10px 14px;
     }
 
     &_costIncrementor {
@@ -44,14 +113,18 @@
           height: 35px;
         }
       }
+
+      label {
+        padding-left: 0;
+      }
     }
 
     &_time {
       input {
         width: 50px;
-        padding: 3px 7px;
+        padding: 8px 7px;
         margin-right: 7px;
-        text-align: right;
+        text-align: center;
       }
     }
 
@@ -90,12 +163,11 @@
       }
 
       .ingredient {
-        background: #fff;
-        border-radius: 4px;
         margin-top: 10px;
         margin-bottom: 15px;
-        padding: 7px 14px;
-
+        border-radius: 15px;
+        padding: 10px 14px;
+        background: $gray;
       }
     }
 
@@ -103,24 +175,25 @@
       position: relative;
 
       input {
-        padding: 7px 14px;
+        padding: 10px 14px;
       }
 
       button {
         position: absolute;
         padding: 5px 10px;
         right: 10px;
-        top: calc(50% - 10px);
+        top: calc(50% - 8px);
         background: none;
         border: none;
         font-weight: 600;
+        color: $green;
       }
     }
   }
 
   .submitButton {
     margin-top: 15px;
-    background: #000;
+    background: $green;
     color: #fff;
     font-size: 15px;
     font-weight: 600;

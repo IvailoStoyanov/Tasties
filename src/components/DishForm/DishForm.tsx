@@ -9,6 +9,7 @@ const DishForm = ({ onSubmit }) => {
   const [cost, setCost] = useState("$");
   const [ingredients, setIngredients] = useState([]);
   const [ingrName, setIngrName] = useState("");
+  const [formState, setFormState] = useState(false);
 
   const addIngredient = (event) => {
     event.preventDefault();
@@ -51,7 +52,7 @@ const DishForm = ({ onSubmit }) => {
     const formData = new FormData();
     formData.append("file", theImage[0]);
     formData.append("upload_preset", "yminrbyz");
-    
+
     if (!!theImage.length) {
       try {
         const response = await fetch(
@@ -61,7 +62,7 @@ const DishForm = ({ onSubmit }) => {
             body: formData,
           }
         );
-  
+
         setImageUploadedState(response.status == 200 ? true : false);
         const data = await response.json();
         setImgSecureUrl(data.secure_url);
@@ -109,8 +110,14 @@ const DishForm = ({ onSubmit }) => {
 
   return (
     <div className={styles.wrapper}>
-      <h2>Add new dish</h2>
-      <form onSubmit={handleOnSubmit}>
+      <div className={styles.cta} onClick={() => setFormState(!formState)}>
+        <div className={`${styles.cta_iconWrapper} ${formState ? styles.active : null}`}>
+          <span></span>
+          <span></span>
+        </div>
+        <h2>Add new dish</h2>
+      </div>
+      <form onSubmit={handleOnSubmit} className={formState ? styles.active : null}>
         <div className={styles.inputWrapper}>
           <label htmlFor="name">Dish name:</label>
           <input
@@ -144,7 +151,10 @@ const DishForm = ({ onSubmit }) => {
         <div className={styles.inputWrapper}>
           <div className={styles.inputWrapper_fileUploadInput}>
             <label htmlFor="image">Upload dish image</label>
-            <span>{!!imgName && !imageUploadedState ? 'uploading: ' : ''}{imgName}</span>
+            <span>
+              {!!imgName && !imageUploadedState ? "uploading: " : ""}
+              {imgName}
+            </span>
             <input
               required
               type="file"
