@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-const API_ENDPOINT = "https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Dishes?";
+const API_ENDPOINT = "https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Dishes";
 
 const filterDataForUser = (data, user) => {
   const personalArray = data.records.filter((record) =>  record.fields.userId == user.sub);
@@ -8,7 +8,7 @@ const filterDataForUser = (data, user) => {
 };
 
 exports.handler = async (event, context) => {
-  if (context.clientContext.user) {
+  if (context.clientContext.user.sub) {
     const response = await fetch(API_ENDPOINT, {
       headers: {
         Authorization: `Bearer keyZEIj7y1Z2S3ra6`,
@@ -19,6 +19,7 @@ exports.handler = async (event, context) => {
       context.clientContext.user
     );
 
+    console.log(context.clientContext);
     return { statusCode: 200, body: JSON.stringify({ data }) };
   }
   return {
