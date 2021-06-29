@@ -113,7 +113,7 @@ export default function Home() {
     data.userId = user.id;
     const ingredientsData = createIngredientsObjectContainer(data);
 
-    await createIngredientsForDish(ingredientsData);
+    !dishesContext.length &&  await createIngredientsForDish(ingredientsData);
     await createDish(data);
   }
 
