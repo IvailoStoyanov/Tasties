@@ -72,3 +72,15 @@ export async function updateAvailableIngredients(data, arrayID) {
     console.error(err);
   }
 }
+
+export async function createIngredientsForDish(data) {
+  // const user = auth.currentUser();
+
+  await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/postIngredients`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      Authorization: `Bearer keyZEIj7y1Z2S3ra6`,
+    },
+  });
+}

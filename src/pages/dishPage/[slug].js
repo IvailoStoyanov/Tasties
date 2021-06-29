@@ -96,7 +96,6 @@ const DishDetails = ({ extendedDishData }) => {
               setMissingIngArrayID(list.id);
             }
             if (list.fields.name === "cartIngredients") {
-              console.log(list.id);
               setCartIngredientsContext(list.fields.ingredients);
               setCartIngArrayID(list.id);
             }

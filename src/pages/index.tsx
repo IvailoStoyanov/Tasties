@@ -11,6 +11,7 @@ import Intro from "../components/Intro";
 import DishForm from "../components/DishForm";
 import UserNav from "../components/UserNav";
 import { createDish } from "../lib/dishes";
+import { createIngredientsForDish } from "../lib/ingredients";
 
 export default function Home() {
   const {
@@ -30,12 +31,7 @@ export default function Home() {
     setDishesContext,
   } = useContext(DishesContext);
 
-  const { 
-    user,
-    login, 
-    logout, 
-    authReady 
-  } = useContext(AuthContext);
+  const { user, login, logout, authReady } = useContext(AuthContext);
 
   useEffect(() => {
     if (
@@ -103,8 +99,21 @@ export default function Home() {
     }
   }, [user, authReady]);
 
+  const createIngredientsObjectContainer = ({userId, neededIngredients}) => {
+    return {
+      missingIngredients: neededIngredients,
+      availableIngredients: [],
+      cartIngredients: [],
+      userId
+    }
+  }
+
   async function handleOnSubmit(data: any, e) {
+    e.preventDefault();
     data.userId = user.id;
+    const ingredientsData = createIngredientsObjectContainer(data);
+
+    await createIngredientsForDish(ingredientsData);
     await createDish(data);
   }
 
@@ -124,7 +133,7 @@ export default function Home() {
           )}
           {user && (
             <>
-            <UserNav />
+              <UserNav />
               <main className={styles.main}>
                 <ul>
                   {dishesContext.map(({ fields }, id) => {

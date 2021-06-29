@@ -37,6 +37,6 @@ export async function createDish(data) {
     headers: {
       Authorization: `Bearer keyZEIj7y1Z2S3ra6`,
     },
-  });
+  }).then(() => {window.location.reload()});
 }
 // Authorization: `Bearer ${user.token.access_token}`,
