@@ -10,6 +10,7 @@ import {
   updateCartIngredients,
 } from "../../lib/ingredients";
 import styles from "./DishPage.module.scss";
+import { useRouter } from "next/router";
 
 export const getStaticProps = async (context) => {
   const id = context.params.slug;
@@ -57,6 +58,7 @@ const DishDetails = ({ extendedDishData }) => {
 
   const { user, login, logout, authReady } = useContext(AuthContext);
   const [ownedDishIng, setOwnedDishIng] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     //This fetch could be placed within the api folder?!
@@ -102,6 +104,8 @@ const DishDetails = ({ extendedDishData }) => {
           });
         })
         .catch(() => {
+          logout();
+          router.push("/");
           setAvailableIngredientsContext([]);
           setMissingIngredientsContext([]);
           setCartIngredientsContext([]);

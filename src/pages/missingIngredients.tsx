@@ -14,6 +14,7 @@ import {
 import { AuthContext } from "../../contexts/AuthContext";
 
 import UserNav from '../components/UserNav'
+import { useRouter } from "next/router";
 
 export default function MissingIngredients() {
   const {
@@ -33,7 +34,8 @@ export default function MissingIngredients() {
 
   const ingListElement = useRef(null);
 
-  const { user, authReady } = useContext(AuthContext);
+  const { user, authReady, logout } = useContext(AuthContext);
+  const router = useRouter();
 
   useEffect(() => {
     //This fetch could be placed within the api folder?!
@@ -72,6 +74,10 @@ export default function MissingIngredients() {
           });
         })
         .catch(() => {
+          logout();
+          router.push("/");
+          console.log('rerout to home page');
+          
           setAvailableIngredientsContext([]);
           setMissingIngredientsContext([]);
           setCartIngredientsContext([]);

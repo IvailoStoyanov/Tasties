@@ -3,7 +3,9 @@ const fetch = require("node-fetch");
 const API_ENDPOINT = "https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Dishes";
 
 const filterDataForUser = (data, user) => {
-  const personalArray = data.records.filter((record) =>  record.fields.userId == user.sub);
+  const personalArray = data.records.filter(
+    (record) => record.fields.userId == user.sub
+  );
   return personalArray;
 };
 
@@ -14,6 +16,7 @@ exports.handler = async (event, context) => {
         Authorization: `Bearer keyZEIj7y1Z2S3ra6`,
       },
     });
+
     const data = filterDataForUser(
       await response.json(),
       context.clientContext.user
@@ -21,8 +24,4 @@ exports.handler = async (event, context) => {
 
     return { statusCode: 200, body: JSON.stringify({ data }) };
   }
-  return {
-    statusCode: 500,
-    body: JSON.stringify({ error: "Failed fetching data" }),
-  };
 };

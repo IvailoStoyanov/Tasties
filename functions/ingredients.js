@@ -1,9 +1,12 @@
 const fetch = require("node-fetch");
 
-const API_ENDPOINT = "https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients?";
+const API_ENDPOINT =
+  "https://api.airtable.com/v0/appgvzIZYa4IuqAOE/Ingredients?";
 
 const filterDataForUser = (data, user) => {
-  const personalArray = data.records.filter((record) =>  record.fields.userId == user.sub);
+  const personalArray = data.records.filter(
+    (record) => record.fields.userId == user.sub
+  );
   return personalArray;
 };
 
@@ -14,6 +17,7 @@ exports.handler = async (event, context) => {
         Authorization: `Bearer keyZEIj7y1Z2S3ra6`,
       },
     });
+
     const data = filterDataForUser(
       await response.json(),
       context.clientContext.user

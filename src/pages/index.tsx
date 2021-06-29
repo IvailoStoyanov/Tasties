@@ -72,6 +72,7 @@ export default function Home() {
           });
         })
         .catch(() => {
+          logout();
           setAvailableIngredientsContext([]);
           setMissingIngredientsContext([]);
           setCartIngredientsContext([]);
@@ -94,6 +95,7 @@ export default function Home() {
           setDishesContext(data.data);
         })
         .catch(() => {
+          logout();
           setDishesContext([]);
         });
     }
@@ -125,6 +127,7 @@ export default function Home() {
       </Head>
       {authReady && (
         <>
+        <UserNav />
           {!user && (
             <div className={styles.introWrapper}>
               <Intro />
@@ -133,7 +136,6 @@ export default function Home() {
           )}
           {user && (
             <>
-              <UserNav />
               <main className={styles.main}>
                 <ul>
                   {dishesContext.map(({ fields }, id) => {
