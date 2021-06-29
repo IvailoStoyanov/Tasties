@@ -1,6 +1,5 @@
 export default async (req, res) => {
   if (req.method === "GET") {
-    console.log('EXEC?');
     const response = await fetch(
       `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Dishes?`,
       {

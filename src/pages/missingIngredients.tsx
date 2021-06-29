@@ -76,7 +76,6 @@ export default function MissingIngredients() {
         .catch(() => {
           logout();
           router.push("/");
-          console.log('rerout to home page');
           
           setAvailableIngredientsContext([]);
           setMissingIngredientsContext([]);

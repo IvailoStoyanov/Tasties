@@ -6,15 +6,6 @@ import styles from "./UserNav.module.scss";
 
 const UserNav = () => {
   const { user, login, logout, authReady } = useContext(AuthContext);
-  const router = useRouter();
-
-  useEffect(() => {
-    
-    // setTimeout(() => {
-    //   console.log(!user);
-    //   // !user && router.push("/");
-    // }, 2000)
-  }, []);
 
   return (
     user && (
