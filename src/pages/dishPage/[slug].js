@@ -104,8 +104,8 @@ const DishDetails = ({ extendedDishData }) => {
           });
         })
         .catch(() => {
-          logout();
-          router.push("/");
+          // logout();
+          // router.push("/");
           setAvailableIngredientsContext([]);
           setMissingIngredientsContext([]);
           setCartIngredientsContext([]);
