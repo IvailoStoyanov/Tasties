@@ -25,22 +25,6 @@ export const getServerSideProps = async (context) => {
   };
 };
 
-// export const getStaticPaths = async () => {
-//   const res = await getAllDishes();
-//   const paths = res.map((dish) => {
-//     return {
-//       params: {
-//         slug: dish.id,
-//       },
-//     };
-//   });
-
-//   return {
-//     paths,
-//     fallback: false,
-//   };
-// };
-
 const DishDetails = ({ extendedDishData }) => {
   const {
     availableIngArrayID,
