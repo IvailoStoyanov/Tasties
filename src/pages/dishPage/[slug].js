@@ -12,7 +12,8 @@ import {
 import styles from "./DishPage.module.scss";
 import { useRouter } from "next/router";
 
-export const getStaticProps = async (context) => {
+//getServerSideProps (context) context.params.id
+export const getServerSideProps = async (context) => {
   const id = context.params.slug;
 
   const singleDish = await getSingleDish(id);
@@ -24,21 +25,21 @@ export const getStaticProps = async (context) => {
   };
 };
 
-export const getStaticPaths = async () => {
-  const res = await getAllDishes();
-  const paths = res.map((dish) => {
-    return {
-      params: {
-        slug: dish.id,
-      },
-    };
-  });
+// export const getStaticPaths = async () => {
+//   const res = await getAllDishes();
+//   const paths = res.map((dish) => {
+//     return {
+//       params: {
+//         slug: dish.id,
+//       },
+//     };
+//   });
 
-  return {
-    paths,
-    fallback: false,
-  };
-};
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// };
 
 const DishDetails = ({ extendedDishData }) => {
   const {
