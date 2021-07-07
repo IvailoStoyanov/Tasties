@@ -12,7 +12,6 @@ import {
 import styles from "./DishPage.module.scss";
 import { useRouter } from "next/router";
 
-//getServerSideProps (context) context.params.id
 export const getServerSideProps = async (context) => {
   const id = context.params.slug;
 
